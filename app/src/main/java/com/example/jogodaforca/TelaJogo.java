@@ -22,6 +22,8 @@ public class TelaJogo extends AppCompatActivity implements View.OnClickListener 
     private ArrayList<Integer> listaImagem;
     private ArrayList<String> listaPalavras;
     private int indiceImagem;
+    private TextView txAcerto, txErro;
+    private int acerto, erro;
     private Button b1;
     private String palavra;
     private char[] estado;
@@ -35,6 +37,8 @@ public class TelaJogo extends AppCompatActivity implements View.OnClickListener 
 
         imagem = findViewById(R.id.imageView2);
         indiceImagem = 0;
+        acerto = 0;
+        erro = 0;
         listaImagem = new ArrayList<Integer>();
         listaImagem.add(R.drawable.forca_1_9);
         listaImagem.add(R.drawable.forca_2_9);
@@ -66,6 +70,8 @@ public class TelaJogo extends AppCompatActivity implements View.OnClickListener 
 
         texto = findViewById(R.id.textView3);
         palavra = new String();
+        txAcerto = findViewById(R.id.textAcerto);
+        txErro = findViewById(R.id.textErro);
 
         listaIDsButtons = new ArrayList<Integer>();
         listaIDsButtons.add(R.id.button2);
@@ -106,6 +112,8 @@ public class TelaJogo extends AppCompatActivity implements View.OnClickListener 
         //volto a imagem sem o boneco enforcado
         imagem.setImageResource(R.drawable.forca_0_9);
         indiceImagem = 0;
+        acerto = 0;
+        erro = 0;
         //palavra recebe uma nova sorteada
         palavra = sorteiaPalavra();
         //instancio o vetor de char pela qtd de caracteres da palavra
@@ -152,8 +160,21 @@ public class TelaJogo extends AppCompatActivity implements View.OnClickListener 
         }
         if(status == false){
             atualizaImagem();
+            erro++;
+            txErro.setText(Integer.toString(erro)+"/"+Integer.toString(listaImagem.size()));
         }else{
             atualizaTexto();
+            acerto++;
+            txAcerto.setText(Integer.toString(acerto));
+        }
+    }
+
+    public void checaTermino(){
+        boolean verifica = false;
+        for (int i = 0; i<estado.length; i++){
+            if(estado[i]=='_'){
+                verifica = true;
+            }
         }
     }
 
