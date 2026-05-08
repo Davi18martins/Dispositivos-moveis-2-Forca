@@ -22,6 +22,7 @@ public class TelaJogo extends AppCompatActivity implements View.OnClickListener 
     private ArrayList<Integer> listaImagem;
     private ArrayList<String> listaPalavras;
     private int indiceImagem;
+    private TextView txAcerto, txErro;
     private Button b1;
     private String palavra;
     private char[] estado;
@@ -66,6 +67,8 @@ public class TelaJogo extends AppCompatActivity implements View.OnClickListener 
 
         texto = findViewById(R.id.textView3);
         palavra = new String();
+        txAcerto = findViewById(R.id.textAcerto);
+        txErro = findViewById(R.id.textErro);
 
         listaIDsButtons = new ArrayList<Integer>();
         listaIDsButtons.add(R.id.button2);
