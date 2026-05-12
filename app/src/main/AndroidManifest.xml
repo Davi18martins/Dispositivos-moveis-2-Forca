@@ -12,16 +12,10 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.JogoDaForca">
         <activity
-            android:name=".a"
+            android:name=".TelaJogo02"
             android:exported="false" />
         <activity
-            android:name=".TelaJogo"
-            android:exported="false" />
-        <activity
-            android:name="com.Tl"
-            android:exported="false" />
-        <activity
-            android:name=".MainActivity"
+            android:name=".TelaJogo01"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -29,6 +23,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".TelaJogo"
+            android:exported="true"></activity>
     </application>
 
 </manifest>
