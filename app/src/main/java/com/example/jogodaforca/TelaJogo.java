@@ -1,5 +1,6 @@
 package com.example.jogodaforca;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -7,6 +8,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -19,22 +21,27 @@ import java.util.Collections;
 public class TelaJogo extends AppCompatActivity implements View.OnClickListener {
 
     private ImageView imagem;
-    private ArrayList<Integer> listaImagem;
-    private ArrayList<String> listaPalavras;
-    private int indiceImagem;
-    private TextView txAcerto, txErro;
-    private int acerto, erro;
-    private Button b1;
     private String palavra;
     private char[] estado;
     private TextView texto;
+    private ArrayList<Integer> listaImagem;
+    private ArrayList<String> listaPalavras;
     private ArrayList<Integer> listaIDsButtons;
+    private int indiceImagem;
+    private TextView txAcerto, txErro;
+    private int acerto, erro;
 
+    private Button b1;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_tela_jogo);
-
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            return insets;
+        });
         imagem = findViewById(R.id.imageView2);
         indiceImagem = 0;
         acerto = 0;
@@ -53,25 +60,24 @@ public class TelaJogo extends AppCompatActivity implements View.OnClickListener 
 
         listaPalavras = new ArrayList<String>();
         listaPalavras.add("CASA");
-        listaPalavras.add("CAVALO");
+        listaPalavras.add("ABACATE");
+        listaPalavras.add("TOMATE");
+        listaPalavras.add("LIXO");
+        listaPalavras.add("CADEIRA");
+        listaPalavras.add("CARTEIRA");
         listaPalavras.add("MESA");
-        listaPalavras.add("CARRO");
         listaPalavras.add("ASFALTO");
+        listaPalavras.add("CARRETA");
+        listaPalavras.add("TROMBONE");
         listaPalavras.add("QUEIJO");
-        listaPalavras.add("PESSOA");
-        listaPalavras.add("HOMEM");
-        listaPalavras.add("MULHER");
-        listaPalavras.add("RODA");
-        listaPalavras.add("RECRUTA");
-        listaPalavras.add("RUA");
-        listaPalavras.add("INJEÇÃO");
-        listaPalavras.add("GUERREIRO");
-        listaPalavras.add("MOTO");
 
         texto = findViewById(R.id.textView3);
         palavra = new String();
+
         txAcerto = findViewById(R.id.textAcerto);
         txErro = findViewById(R.id.textErro);
+
+
 
         listaIDsButtons = new ArrayList<Integer>();
         listaIDsButtons.add(R.id.button2);
@@ -82,8 +88,8 @@ public class TelaJogo extends AppCompatActivity implements View.OnClickListener 
         listaIDsButtons.add(R.id.button7);
         listaIDsButtons.add(R.id.button8);
         listaIDsButtons.add(R.id.button9);
-        listaIDsButtons.add(R.id.button10);
         listaIDsButtons.add(R.id.button11);
+        listaIDsButtons.add(R.id.button10);
         listaIDsButtons.add(R.id.button12);
         listaIDsButtons.add(R.id.button13);
         listaIDsButtons.add(R.id.button14);
@@ -113,21 +119,24 @@ public class TelaJogo extends AppCompatActivity implements View.OnClickListener 
         imagem.setImageResource(R.drawable.forca_0_9);
         indiceImagem = 0;
         acerto = 0;
-        erro = 0;
+        erro= 0;
         //palavra recebe uma nova sorteada
         palavra = sorteiaPalavra();
         //instancio o vetor de char pela qtd de caracteres da palavra
         estado = new char[palavra.length()];
-        //monta o vetor de char com _ (oculto)
+        // monta o vetor de char com _ (oculto)
         for(int i =0; i<estado.length;i++){
             estado[i] = '_';
         }
         atualizaTexto();
-
         for(int i = 0; i<listaIDsButtons.size();i++){
             Button b = findViewById(listaIDsButtons.get(i));
             b.setEnabled(true);
         }
+        txErro.setText(Integer.toString(erro)+"/"+Integer.toString(listaImagem.size()));
+        txAcerto.setText(Integer.toString(acerto));
+
+
     }
 
     public String sorteiaPalavra(){
@@ -136,7 +145,6 @@ public class TelaJogo extends AppCompatActivity implements View.OnClickListener 
         sorteado = listaPalavras.get(0);
         return sorteado;
     }
-
     public void atualizaImagem(){
         imagem.setImageResource(listaImagem.get(indiceImagem));
         indiceImagem++;
@@ -144,43 +152,74 @@ public class TelaJogo extends AppCompatActivity implements View.OnClickListener 
     public void atualizaTexto(){
         //preparar o texto para exibir, incluindo um espaço entre os _
         String temp = "";
-        for (int j=0; j<estado.length;j++){
-            temp += estado[j]+ "";
+        for(int j=0; j<estado.length; j++){
+            temp += estado[j]+ " ";
         }
         //exibe a palavra
-        texto.setText(palavra);
+        texto.setText(temp);
     }
     public void verificaLetra(char c){
         boolean status = false;
-        for(int i = 0; i<palavra.length();i++){
-           if(palavra.charAt(i)==c){
-               status = true;
-               estado[i] = c;
-           }
+        for(int i =0; i<palavra.length();i++){
+            if(palavra.charAt(i)==c)
+            {
+                status = true;
+                estado[i] = c;
+            }
         }
-        if(status == false){
+        if(!status){
             atualizaImagem();
             erro++;
             txErro.setText(Integer.toString(erro)+"/"+Integer.toString(listaImagem.size()));
+            checaTermino();
         }else{
             atualizaTexto();
             acerto++;
             txAcerto.setText(Integer.toString(acerto));
+            checaTermino();
         }
     }
-
     public void checaTermino(){
         boolean verifica = false;
-        for (int i = 0; i<estado.length; i++){
-            if(estado[i]=='_'){
+        for(int i=0; i<estado.length;i++){
+            if(estado[i]=='_')
+            {
                 verifica = true;
+                //se foi para true, é pq ainda tem underline
             }
+        }
+        if(!verifica){
+            //aqui se ele ganhou
+            AlertDialog.Builder caixa = new AlertDialog.Builder(this);
+            caixa.setTitle("Você Ganhou!!!!");
+            caixa.setMessage("Deseja jogar novamente?");
+            caixa.setPositiveButton("Jogar", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    inicializaJogo();
+                }
+            });
+            caixa.show();
+        }
+        if(erro >= listaImagem.size()){
+            AlertDialog.Builder caixa = new AlertDialog.Builder(this);
+            caixa.setTitle("Você Perdeu!!!!");
+            caixa.setMessage("Deseja jogar novamente?");
+            caixa.setPositiveButton("Jogar", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    inicializaJogo();
+                }
+            });
+            caixa.show();
         }
     }
 
+
+
     @Override
-    public void onClick(View v) {
-        Button b = (Button) v;
+    public void onClick(View view) {
+        Button b = (Button) view;
         b.setEnabled(false);
         verificaLetra(b.getText().toString().charAt(0));
     }
