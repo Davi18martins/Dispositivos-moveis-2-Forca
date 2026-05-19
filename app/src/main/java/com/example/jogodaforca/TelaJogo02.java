@@ -15,12 +15,15 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import java.util.ArrayList;
+
 public class TelaJogo02 extends AppCompatActivity implements View.OnClickListener {
 
     private Button btnCadastro, btnListar;
     private EditText caixaPalarvra;
     private RadioGroup grupo;
-    private String categoriaSelecionada;
+    private String categoriaSelecionada, palavraDigitada;
+    private BD bd;
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -62,10 +65,27 @@ public class TelaJogo02 extends AppCompatActivity implements View.OnClickListene
                 Toast.makeText(TelaJogo02.this, "", Toast.LENGTH_SHORT).show();
             }
         });
+        bd = new BD(TelaJogo02.this);
     }
 
     @Override
     public void onClick(View v) {
-
+        if(v == btnCadastro){
+            palavraDigitada = caixaPalarvra.getText().toString();
+            Palavra p =new Palavra();
+            p.setNome(palavraDigitada);
+            p.setCategoria(categoriaSelecionada);
+            bd.salvarPalavra(p);
+            Toast.makeText(this,"Salvo!",Toast.LENGTH_SHORT).show();
+        }
+        if(v == btnListar){
+            ArrayList<Palavra> lista = new ArrayList<Palavra>();
+            lista = bd.listarPalavras();
+            String stringao = new String();
+            for(int  i =0; i<lista.size();i++){
+                stringao += lista.get(i).getNome() +"|"+lista.get(i).getCategoria()+"";
+            }
+            Toast.makeText(this,stringao,Toast.LENGTH_SHORT).show();
+            }
     }
 }
